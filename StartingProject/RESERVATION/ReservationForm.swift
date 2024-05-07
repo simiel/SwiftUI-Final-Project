@@ -50,7 +50,11 @@ struct ReservationForm: View {
                                   value: $party,
                                   formatter: NumberFormatter())
                         .keyboardType(.numberPad)
-                        // add a modifier here
+                        .onChange(of: party, perform: { value in
+                            if value == 0{
+                                party = 1
+                            }
+                        })
                     }
                     
                     
@@ -120,7 +124,7 @@ struct ReservationForm: View {
                     
                     // add the RESERVE button
                     Button(action: {
-
+                        validateForm()
                     }, label: {
                         Text("CONFIRM RESERVATION")
                     })
@@ -148,6 +152,9 @@ struct ReservationForm: View {
             }
             
             // add an alert after this line
+            .alert(isPresented: $showFormInvalidMessage) {
+                Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+            }
             
         }
         .onAppear {
@@ -159,6 +166,7 @@ struct ReservationForm: View {
     }
     
     private func validateForm() {
+        print("Pressed")
         
         // customerName must contain just letters
         let nameIsValid = isValid(name: customerName)
